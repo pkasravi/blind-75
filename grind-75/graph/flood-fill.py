@@ -12,7 +12,7 @@ class Point:
     def isValid(self, max_row: int, max_col: int) -> bool:
         return self.row >= 0 and self.col >= 0 and self.row <= max_row - 1 and self.col <= max_col - 1
 
-    def getNeighbors(self) -> List[Point]:
+    def getNeighbors(self) -> List["Point"]:
         return [
             Point(self.row + 1, self.col),
             Point(self.row - 1, self.col),
@@ -21,10 +21,10 @@ class Point:
         ]
 
 def floodFill(image: List[List[int]], sr: int, sc: int, color: int) -> List[List[int]]:
-    max_row = len(image)
-    max_col = len(image[0])
+    if image[sr][sc] == color:
+        return image
+    max_col, max_row = len(image[0]), len(image)
     old_color = image[sr][sc]
-    visited = [[0] * max_col] * max_row
 
     work_queue = deque([Point(row=sr, col=sc)])
     while len(work_queue) > 0:
@@ -32,8 +32,6 @@ def floodFill(image: List[List[int]], sr: int, sc: int, color: int) -> List[List
         image[curr.row][curr.col] = color
 
         for neighbor in curr.getNeighbors():
-            if neighbor.isValid(max_col=max_col, max_row=max_row) and visited[neighbor.row][neighbor.col] == 0 and image[neighbor.row][neighbor.col] == old_color:
-                # TODO: Can't figure out why this isn't working
+            if neighbor.isValid(max_col=max_col, max_row=max_row) and image[neighbor.row][neighbor.col] == old_color:
                 work_queue.append(neighbor)
-                visited[neighbor.row][neighbor.col] = 1
     return image

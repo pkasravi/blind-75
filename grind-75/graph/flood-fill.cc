@@ -1,3 +1,4 @@
+#include <queue>
 #include <vector>
 
 /* -----------------------------------------------------------------------------
@@ -42,12 +43,14 @@ std::vector<Point> getChildren(const Point& cell) {
   };
 }
 
-vector<vector<int>> floodFill(vector<vector<int>>& image, int sr, int sc, int color) {
+std::vector<std::vector<int>> floodFill(std::vector<std::vector<int>>& image, const int sr, const int sc, const int color) {
+  if (image[sr][sc] == color) {
+    return image;
+  }
   const size_t rows{image.size()};
   const size_t cols{image[0].size()};
   const int old_color{image[sr][sc]};
   
-  std::vector<std::vector<int>> visited(rows, std::vector<int>(cols, 0));
   std::queue<Point> work_queue{{{.row=sr, .col=sc}}};
 
   while (!work_queue.empty()) {
@@ -58,10 +61,8 @@ vector<vector<int>> floodFill(vector<vector<int>>& image, int sr, int sc, int co
       for (const auto child : getChildren(curr)) {
           if (
 							isValid(child, rows, cols) &&
-							visited[child.row][child.col] == 0 &&
 							image[child.row][child.col] == old_color) {
               work_queue.push(child);
-              visited[curr.row][curr.col] = 1;
           }
       }
   }
